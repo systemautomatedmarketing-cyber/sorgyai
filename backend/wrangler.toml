@@ -1,0 +1,106 @@
+# ============================================================
+# SorgyAI — Cloudflare Workers Configuration
+# wrangler.toml
+# ============================================================
+# PHASE 1 (MVP Interno): single worker, hardcoded assistant.
+# PHASE 2 (Team Duplication): D1 binding added for multi-tenant routing.
+# PHASE 3 (Automated Onboarding): KV binding for chatbot config caching.
+# ============================================================
+
+name = "sorgyai-backend"
+main = "src/index.ts"
+compatibility_date = "2024-06-20"
+compatibility_flags = ["nodejs_compat"]
+
+# --- Workers Runtime Settings ---
+# Free tier: 100,000 req/day — sufficient for 400 active users at low volume.
+# No fixed monthly cost on Cloudflare Workers free plan.
+
+[build]
+command = "npm run build"
+
+# ============================================================
+# ENVIRONMENT VARIABLES (non-secret, per-environment)
+# Secrets (OPENAI_API_KEY, FIREBASE_SERVICE_ACCOUNT) must be
+# added via:  wrangler secret put OPENAI_API_KEY
+# ============================================================
+
+[vars]
+ENVIRONMENT = "development"
+APP_NAME    = "SorgyAI"
+APP_URL     = "http://localhost:5173"
+
+# --- CORS allowed origins (space-separated or array) ---
+CORS_ORIGIN = "http://localhost:5173"
+
+# --- OpenAI model to use for all completions ---
+OPENAI_MODEL = "gpt-4o-mini"
+
+# --- PHASE 1: Master Assistant ID (hardcoded for alpha group) ---
+# Replace with your actual OpenAI Assistant ID after creation.
+# In Phase 2 this value is overridden by per-agent config from D1.
+MASTER_ASSISTANT_ID = "asst_REPLACE_WITH_YOUR_ID"
+
+# ============================================================
+# D1 DATABASE (Cloudflare Serverless SQL)
+# Handles: Users, Leads, Analytics
+# PHASE 2+: Enables multi-tenant routing by agentId.
+# ============================================================
+
+[[d1_databases]]
+binding  = "DB"           # env.DB in Worker code
+database_name = "sorgyai-db"
+database_id   = "REPLACE_WITH_YOUR_D1_DATABASE_ID"   # wrangler d1 create sorgyai-db
+
+# ============================================================
+# KV NAMESPACE
+# Purpose: Cache chatbot configurations per agent (fast edge reads).
+# PHASE 3: Store generated embed tokens and onboarding state.
+# ============================================================
+
+[[kv_namespaces]]
+binding    = "CHATBOT_CONFIG_CACHE"
+id         = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"    # wrangler kv:namespace create CHATBOT_CONFIG_CACHE
+preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
+
+# ============================================================
+# R2 OBJECT STORAGE (optional, for product catalog uploads)
+# Free tier: 10 GB storage, 1M Class A ops/month.
+# Alternative to uploading directly to OpenAI Files API.
+# ============================================================
+
+[[r2_buckets]]
+binding     = "CATALOGS_BUCKET"
+bucket_name = "sorgyai-catalogs"
+
+# ============================================================
+# PRODUCTION ENVIRONMENT OVERRIDES
+# ============================================================
+
+[env.production]
+name = "sorgyai-backend-prod"
+
+[env.production.vars]
+ENVIRONMENT = "production"
+APP_URL     = "https://sorgyai.app"
+CORS_ORIGIN = "https://sorgyai.app"
+
+# ============================================================
+# RATE LIMITING (Cloudflare Workers Rate Limiting API)
+# Protects OpenAI quota from abuse — free up to 1M req/month.
+# ============================================================
+
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }    # 20 chat requests per minute per IP
+
+# ============================================================
+# ROUTES (custom domain mapping — Phase 3)
+# Uncomment after custom domain is configured in Cloudflare.
+# ============================================================
+
+# [[routes]]
+# pattern = "api.sorgyai.app/*"
+# zone_name = "sorgyai.app"

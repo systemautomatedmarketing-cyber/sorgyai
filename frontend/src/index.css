@@ -1,0 +1,172 @@
+/* ============================================================
+   SorgyAI — Global Stylesheet
+   Theme: Cyber-Glass / Electric Blue / LED Glow
+   ============================================================ */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   BASE RESET & GLOBAL DEFAULTS
+   ============================================================ */
+@layer base {
+  :root {
+    /* Core palette CSS vars (consumed by JS and components) */
+    --color-electric:    #00D4FF;
+    --color-electric-dk: #0066FF;
+    --color-void-bg:     #030c1a;
+    --color-void-panel:  #06132a;
+    --color-silver:      #E8F4FD;
+    --color-silver-dim:  #94a8ba;
+
+    /* Glass vars */
+    --glass-bg:          rgba(13, 37, 80, 0.45);
+    --glass-border:      rgba(255, 255, 255, 0.09);
+    --glass-blur:        12px;
+
+    /* Glow vars */
+    --glow-electric:     0 0 20px rgba(0,212,255,0.40), 0 0 40px rgba(0,212,255,0.15);
+    --glow-green:        0 0 12px rgba(0,255,136,0.50);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #030c1a;
+    color: #E8F4FD;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Custom scrollbar — glass style */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(3, 12, 26, 0.8);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.25);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.45);
+  }
+
+  /* Selection color */
+  ::selection {
+    background: rgba(0, 212, 255, 0.25);
+    color: #E8F4FD;
+  }
+
+  /* Headings — Orbitron */
+  h1, h2, h3, h4 {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Focus ring — electric blue */
+  :focus-visible {
+    outline: 2px solid rgba(0, 212, 255, 0.70);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ============================================================
+   BACKGROUND EFFECTS — Applied to #root or layout wrapper
+   ============================================================ */
+@layer components {
+
+  /* Main app background with mesh gradient */
+  .app-bg {
+    background:
+      radial-gradient(ellipse at 10% 50%, rgba(0,212,255,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 20%, rgba(0,102,255,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 90%, rgba(157,0,255,0.04) 0%, transparent 50%),
+      #030c1a;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Subtle grid overlay */
+  .app-bg::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scanning line (decorative, optional) */
+  .scan-overlay::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+    animation: scan-line 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── DIVIDERS ── */
+  .divider-electric {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+  }
+
+  /* ── STATUS BADGES ── */
+  .badge-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(0, 255, 136, 0.10);
+    border: 1px solid rgba(0,255,136,0.30);
+    color: #00FF88;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-pending {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255,229,0,0.08);
+    border: 1px solid rgba(255,229,0,0.30);
+    color: #FFE500;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+}

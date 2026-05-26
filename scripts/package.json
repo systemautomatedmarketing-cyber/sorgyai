@@ -1,0 +1,13 @@
+{
+  "name": "@sorgyai/scripts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "seed": "npx tsx seed-agent.ts",
+    "seed:prod": "WORKER_BASE_URL=https://sorgyai-backend.workers.dev npx tsx seed-agent.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5"
+  }
+}
