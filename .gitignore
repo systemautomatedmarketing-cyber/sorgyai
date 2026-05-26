@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.wrangler/
+
+# Environment & secrets — NEVER commit
+.env
+.env.local
+.env.production
+.dev.vars
+scripts/.env.seed
+scripts/_seed_output.sql
+
+# Firebase service account — contains private key
+*serviceAccount*.json
+firebase-adminsdk*.json
+*adminsdk*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
